@@ -2,7 +2,7 @@ id: comments
 name: Comments
 version: 0.1.0
 apiVersion: kite/plugin/v1
-requires: ">=1.0.0 <2.0.0"
+requires: ">=0.1.0 <2.0.0"
 description: A comment thread under every post, with Giscus, Waline or Twikoo.
 author:
   name: Kite
