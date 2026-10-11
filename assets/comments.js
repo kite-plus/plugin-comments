@@ -9,6 +9,7 @@
 
   var WALINE = "3.15.2";
   var TWIKOO = "2.0.9";
+  var KITE_PLUS_EMBED = "https://comments.kite.plus/embed.js";
 
   var cdns = {
     jsdelivr: function (pkg, version, file) {
@@ -79,8 +80,8 @@
 
   var zh = /^zh/i.test(config.lang || "");
   var labels = zh
-    ? { repo: "仓库", repo_id: "仓库 ID", category_id: "分类 ID", server: "服务端地址", env: "环境" }
-    : { repo: "Repository", repo_id: "Repository ID", category_id: "Category ID", server: "Server address", env: "Environment" };
+    ? { repo: "仓库", repo_id: "仓库 ID", category_id: "分类 ID", server: "服务端地址", env: "环境", site: "站点 ID" }
+    : { repo: "Repository", repo_id: "Repository ID", category_id: "Category ID", server: "Server address", env: "Environment", site: "Site ID" };
 
   // missing says, on a preview only, which settings a service still needs:
   // a reader has no use for the note.
@@ -181,8 +182,29 @@
     });
   }
 
+  // The widget follows the page's colors and reads its address by itself.
+  function kitePlus(at) {
+    if (!settings.site) return missing(at, ["site"]);
+    var el = document.createElement("kite-comments");
+    var data = {
+      site: settings.site,
+      "page-key": config.page,
+      "page-title": config.title,
+      "page-published": config.published,
+      lang: config.lang,
+    };
+    for (var key in data) if (data[key]) el.setAttribute(key, data[key]);
+    at.appendChild(el);
+    if (document.querySelector('script[src="' + KITE_PLUS_EMBED + '"]')) return;
+    var tag = document.createElement("script");
+    tag.src = KITE_PLUS_EMBED;
+    tag.async = true;
+    tag.crossOrigin = "anonymous";
+    document.head.appendChild(tag);
+  }
+
   function start() {
-    var services = { giscus: giscus, waline: waline, twikoo: twikoo };
+    var services = { giscus: giscus, waline: waline, twikoo: twikoo, "kite-plus": kitePlus };
     var service = services[settings.provider] || giscus;
     service(place());
   }

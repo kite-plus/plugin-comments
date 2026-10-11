@@ -1,6 +1,6 @@
 plugin:
   title: 评论
-  description: 在每篇文章下放一个评论区，支持 Giscus、Waline 和 Twikoo。
+  description: 在每篇文章下放一个评论区，支持 Giscus、Waline、Twikoo 和 Kite Plus 评论。
   settings:
     provider:
       label: 评论服务
@@ -8,6 +8,7 @@ plugin:
         giscus: Giscus
         waline: Waline
         twikoo: Twikoo
+        kite-plus: Kite Plus 评论
     repo:
       label: 仓库
       help: 存放评论的 GitHub 公开仓库，需开启 Discussions 并安装 giscus 应用。
@@ -32,6 +33,9 @@ plugin:
     env:
       label: 环境
       help: 你部署的 Twikoo 服务端地址，或腾讯云开发的环境 ID。
+    site:
+      label: 站点 ID
+      help: 在评论控制台复制。
     on_pages:
       label: 页面也显示
       help: 除文章外，“关于”等页面下也放评论区。

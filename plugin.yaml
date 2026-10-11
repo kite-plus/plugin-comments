@@ -3,13 +3,13 @@ name: Comments
 version: 0.1.0
 apiVersion: kite/plugin/v1
 requires: ">=0.1.0 <2.0.0"
-description: A comment thread under every post, with Giscus, Waline or Twikoo.
+description: A comment thread under every post, with Giscus, Waline, Twikoo or Kite Plus Comments.
 author:
   name: Kite
   url: https://github.com/kite-plus
 license: Apache-2.0
 homepage: https://github.com/kite-plus/plugin-comments
-hosts: [giscus.app, cdn.jsdelivr.net, unpkg.com, registry.npmmirror.com]
+hosts: [giscus.app, cdn.jsdelivr.net, unpkg.com, registry.npmmirror.com, comments.kite.plus]
 
 # The thread goes at the end of the page's main content, or into an element
 # marked data-kite-comments where a theme has one. A post leaves it out with
@@ -20,7 +20,7 @@ inject:
     kinds: [post]
     skip: {comments: false}
     html: &thread |
-      <script>window.KiteComments = {settings: {{ .Settings }}, page: {{ .Page.ID }}, lang: {{ .Site.Language }}};</script>
+      <script>window.KiteComments = {settings: {{ .Settings }}, page: {{ .Page.ID }}, title: {{ .Page.Title }}, published: {{ .Page.PublishedAt }}, lang: {{ .Site.Language }}};</script>
       <script src="{{ asset "comments.js" }}" defer></script>
   - at: body
     pages: [single]
@@ -38,6 +38,7 @@ settings:
       - {value: giscus, label: Giscus}
       - {value: waline, label: Waline}
       - {value: twikoo, label: Twikoo}
+      - {value: kite-plus, label: Kite Plus Comments}
   - key: repo
     type: string
     label: Repository
@@ -83,6 +84,11 @@ settings:
     help: The address of your Twikoo server, or the environment ID on Tencent CloudBase.
     placeholder: https://twikoo.example.com
     showIf: {provider: twikoo}
+  - key: site
+    type: string
+    label: Site ID
+    help: Copy it from the comments console.
+    showIf: {provider: kite-plus}
   - key: on_pages
     type: boolean
     label: Under pages too
