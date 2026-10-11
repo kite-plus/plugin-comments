@@ -31,17 +31,19 @@ the post and styled to match the page.
   <img src="https://img.shields.io/badge/Giscus-181717?logo=github&logoColor=white" alt="Giscus">
   <img src="https://img.shields.io/badge/Waline-2E8B57" alt="Waline">
   <img src="https://img.shields.io/badge/Twikoo-1E90FF" alt="Twikoo">
+  <img src="https://img.shields.io/badge/Kite%20Plus%20Comments-4A77D6" alt="Kite Plus Comments">
 </p>
 
 ## Features
 
-- **Three services.** [Giscus](https://giscus.app) keeps the comments in the
+- **Four services.** [Giscus](https://giscus.app) keeps the comments in the
   Discussions of a GitHub repository; [Waline](https://waline.js.org) and
   [Twikoo](https://twikoo.js.org) run on a server of your own, or on Tencent
-  CloudBase for Twikoo.
-- **Threads that survive a new address.** With Giscus, a post is matched to its
-  discussion by its id, so renaming a post or moving the site keeps its
-  comments.
+  CloudBase for Twikoo; [Kite Plus Comments](https://comments.kite.plus) is
+  hosted for you, with nothing to run.
+- **Threads that survive a new address.** With Giscus and Kite Plus Comments, a
+  post is matched to its discussion by its id, so renaming a post or moving the
+  site keeps its comments.
 - **Dark when the page is.** The thread follows the page into dark mode and
   back, whether the theme follows the system or has a switch of its own.
 - **Where a reader expects it.** At the end of the post, after the links to the
@@ -75,13 +77,26 @@ where the thread would be.
 
 | Setting | Service | What it is |
 |---|---|---|
-| Service | | Giscus, Waline or Twikoo |
+| Service | | Giscus, Waline, Twikoo or Kite Plus Comments |
 | Repository, Repository ID, Discussion category, Category ID | Giscus | Copy them from [giscus.app](https://giscus.app) once the repository and category are chosen there |
 | Match a post to its discussion by | Giscus | The post's id (the default), the path of its address, its whole address, or its title |
 | Server address | Waline | Where your Waline server runs |
 | Environment | Twikoo | Your Twikoo server's address, or its environment ID on Tencent CloudBase |
+| Site ID | Kite Plus Comments | Copy it from the comments console |
 | Under pages too | | Also puts a thread under pages such as About |
 | Load scripts from | Waline, Twikoo | jsDelivr, unpkg or npmmirror |
+
+### Kite Plus Comments
+
+Kite Plus Comments is a hosted comment service from Kite Plus. Readers sign in
+with a Kite Plus account, and there is no server of your own to run. It becomes
+usable once `comments.kite.plus` is live.
+
+1. Sign in to the comments console with a Kite Plus account, add your site's
+   address, and verify it.
+2. Copy the site's **Site ID** from the console.
+3. Under **Plugins → Comments → Settings**, choose **Kite Plus Comments** as the
+   service and paste the Site ID.
 
 ## For theme authors
 

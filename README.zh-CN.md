@@ -29,12 +29,13 @@
   <img src="https://img.shields.io/badge/Giscus-181717?logo=github&logoColor=white" alt="Giscus">
   <img src="https://img.shields.io/badge/Waline-2E8B57" alt="Waline">
   <img src="https://img.shields.io/badge/Twikoo-1E90FF" alt="Twikoo">
+  <img src="https://img.shields.io/badge/Kite%20Plus%20%E8%AF%84%E8%AE%BA-4A77D6" alt="Kite Plus 评论">
 </p>
 
 ## 特点
 
-- **三种评论服务**：[Giscus](https://giscus.app) 把评论存在 GitHub 仓库的 Discussions 里；[Waline](https://waline.js.org) 和 [Twikoo](https://twikoo.js.org) 部署在你自己的服务器上，Twikoo 也可以用腾讯云开发。
-- **改地址不丢评论**：用 Giscus 时，文章按 ID 对应到讨论，文章改名、网站搬家，评论都还在。
+- **四种评论服务**：[Giscus](https://giscus.app) 把评论存在 GitHub 仓库的 Discussions 里；[Waline](https://waline.js.org) 和 [Twikoo](https://twikoo.js.org) 部署在你自己的服务器上，Twikoo 也可以用腾讯云开发；[Kite Plus 评论](https://comments.kite.plus) 由 Kite Plus 托管，不用自己部署。
+- **改地址不丢评论**：用 Giscus 或 Kite Plus 评论时，文章按 ID 对应到讨论，文章改名、网站搬家，评论都还在。
 - **跟随深色模式**：页面切到深色，评论区也跟着切换；无论主题是跟随系统，还是自带切换开关。
 - **放在读者期待的位置**：正文结束、上一篇/下一篇之后，也可以放在主题标记的位置。
 - **每篇文章自己决定**：在 front matter 里写 `comments: false`，这篇文章就不显示评论区；「关于」这类页面也可以打开评论。
@@ -60,13 +61,22 @@ kite plugin enable comments
 
 | 设置 | 服务 | 说明 |
 |---|---|---|
-| 评论服务 | | Giscus、Waline 或 Twikoo |
+| 评论服务 | | Giscus、Waline、Twikoo 或 Kite Plus 评论 |
 | 仓库、仓库 ID、讨论分类、分类 ID | Giscus | 在 [giscus.app](https://giscus.app) 选好仓库和分类后复制过来 |
 | 文章与讨论的对应方式 | Giscus | 文章 ID（默认）、地址中的路径、完整地址或文章标题 |
 | 服务端地址 | Waline | 你部署的 Waline 服务端地址 |
 | 环境 | Twikoo | 你部署的 Twikoo 服务端地址，或腾讯云开发的环境 ID |
+| 站点 ID | Kite Plus 评论 | 在评论控制台复制 |
 | 页面也显示 | | 除文章外，「关于」等页面下也放评论区 |
 | 脚本来源 | Waline、Twikoo | jsDelivr、unpkg 或 npmmirror |
+
+### Kite Plus 评论
+
+Kite Plus 评论是 Kite Plus 提供的托管评论服务：读者用 Kite Plus 账号登录，你不用自己部署服务端。等 `comments.kite.plus` 上线后才能使用。
+
+1. 用 Kite Plus 账号登录评论控制台，添加你的站点地址并完成验证。
+2. 在控制台复制站点的**站点 ID**。
+3. 在「插件 → 评论 → 设置」里，把评论服务选为「Kite Plus 评论」，填入站点 ID。
 
 ## 给主题作者
 
