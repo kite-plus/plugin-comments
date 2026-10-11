@@ -36,6 +36,9 @@ jobs:
       - name: Check the script
         run: node --check assets/comments.js
 
+      - name: Test the script
+        run: node --test test/comments.test.js
+
       - name: Build a site with it
         run: |
           site="$RUNNER_TEMP/site"
@@ -72,3 +75,14 @@ jobs:
             echo "A post with comments: no still got a thread."
             exit 1
           fi
+
+          # Kite Plus Comments is told which post it sits under.
+          cat >> kite.yaml <<'YAML'
+            settings:
+              comments:
+                provider: kite-plus
+                site: demo
+          YAML
+          kite build
+          grep -q '"provider":"kite-plus"' public/posts/hello/index.html
+          grep -q 'page: "01J8KQ2P3R4S5T6V7W8X9YZ000", title: "Hello", published: "2026-01-01T00:00:00Z"' public/posts/hello/index.html
