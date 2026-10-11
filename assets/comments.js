@@ -182,19 +182,76 @@
     });
   }
 
-  // The widget follows the page's colors and reads its address by itself.
+  var SERIF = /serif|georgia|times|palatino|garamond|charter|iowan|songti|stsong|simsun|mincho|wenkai/i;
+
+  function hex(color) {
+    var m = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/.exec(color || "");
+    if (!m || m[4] === "0") return "";
+    return "#" + [m[1], m[2], m[3]].map(function (n) {
+      return ("0" + Number(n).toString(16)).slice(-2);
+    }).join("");
+  }
+
+  function luminance(rgb) {
+    var lin = rgb.map(function (v) {
+      var c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+  }
+
+  // The widget draws white text on its accent, so a light link color, as dark
+  // themes have, is darkened in the same hue until that text reads (3:1).
+  // The browser's untouched default blue says nothing about the theme.
+  function usable(color) {
+    if (!/^#[0-9a-f]{6}$/i.test(color) || color.toLowerCase() === "#0000ee") return "";
+    var rgb = [1, 3, 5].map(function (i) { return parseInt(color.substr(i, 2), 16); });
+    while (luminance(rgb) > 0.3) {
+      rgb = rgb.map(function (v) { return Math.floor(v * 0.92); });
+    }
+    return "#" + rgb.map(function (v) { return ("0" + v.toString(16)).slice(-2); }).join("");
+  }
+
+  // A theme names its accent and font on the spot it marks (data-accent,
+  // data-font); otherwise both follow how the page draws its article.
+  function looks(at) {
+    var named = at.getAttribute("data-accent") || "";
+    var accent = /^#[0-9a-f]{6}$/i.test(named) ? named : "";
+    var font = at.getAttribute("data-font");
+    font = font === "serif" || font === "sans" ? font : "";
+    if (!window.getComputedStyle) return { accent: accent, font: font };
+    var scope = document.querySelector("article") || document.querySelector("main") || document.body;
+    var link = scope.querySelector("a[href]");
+    if (!accent && link) accent = usable(hex(window.getComputedStyle(link).color));
+    if (!font) {
+      var text = scope.querySelector("p") || scope;
+      var first = (window.getComputedStyle(text).fontFamily || "").split(",")[0];
+      if (SERIF.test(first) && !/sans/i.test(first)) font = "serif";
+    }
+    return { accent: accent, font: font };
+  }
+
+  // The widget follows the page's background and reads its address by itself.
   function kitePlus(at) {
     if (!settings.site) return missing(at, ["site"]);
     var el = document.createElement("kite-comments");
+    var look = looks(at);
     var data = {
       site: settings.site,
       "page-key": config.page,
       "page-title": config.title,
       "page-published": config.published,
       lang: config.lang,
+      accent: look.accent,
+      font: look.font,
     };
     for (var key in data) if (data[key]) el.setAttribute(key, data[key]);
     at.appendChild(el);
+    // A theme switch can repaint the links; keep the last usable accent.
+    onDarkChange(function () {
+      var now = looks(at).accent;
+      if (now) el.setAttribute("accent", now);
+    });
     if (document.querySelector('script[src="' + KITE_PLUS_EMBED + '"]')) return;
     var tag = document.createElement("script");
     tag.src = KITE_PLUS_EMBED;

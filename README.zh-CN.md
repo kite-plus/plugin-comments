@@ -72,7 +72,9 @@ kite plugin enable comments
 
 ### Kite Plus 评论
 
-Kite Plus 评论是 Kite Plus 提供的托管评论服务：读者用 Kite Plus 账号登录，你不用自己部署服务端。等 `comments.kite.plus` 上线后才能使用。
+Kite Plus 评论是 Kite Plus 提供的托管评论服务：读者用 Kite Plus 账号登录，你不用自己部署服务端。服务地址是 `comments.kite.plus`。
+
+评论区会跟随页面的样子：主色取文章里链接的颜色（白字压在上面不够清楚时会调暗，比如深色模式），文章用衬线字体时评论区也用衬线。主题也可以自己指定，见下文。
 
 1. 用 Kite Plus 账号登录评论控制台，添加你的站点地址并完成验证。
 2. 在控制台复制站点的**站点 ID**。
@@ -85,6 +87,14 @@ Kite Plus 评论是 Kite Plus 提供的托管评论服务：读者用 Kite Plus 
 ```html
 <div data-kite-comments></div>
 ```
+
+用 Kite Plus 评论时，这个标记还能替主题指定评论区的主色和字体，代替插件从页面上读到的：
+
+```html
+<div data-kite-comments data-accent="#b25334" data-font="serif"></div>
+```
+
+`data-accent` 是 `#RRGGBB` 格式的颜色，`data-font` 是 `serif` 或 `sans`。
 
 ## 发布新版本
 

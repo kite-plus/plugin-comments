@@ -67,7 +67,7 @@ class Element {
 }
 
 // run loads the script into a fresh page and hands the page back.
-function run(config, { hostname = "blog.example.com", main = true, marker = false, loaded = false } = {}) {
+function run(config, { hostname = "blog.example.com", main = true, marker = false, loaded = false, article = null, style = null } = {}) {
   const html = new Element("html");
   const head = new Element("head");
   const body = new Element("body");
@@ -77,6 +77,15 @@ function run(config, { hostname = "blog.example.com", main = true, marker = fals
   const mainEl = main ? body.appendChild(new Element("main")) : null;
   const slot = marker ? body.appendChild(new Element("div")) : null;
   if (slot) slot.attrs["data-kite-comments"] = "";
+  if (slot && typeof marker === "object") Object.assign(slot.attrs, marker);
+  if (article) {
+    const el = (mainEl || body).appendChild(new Element("article"));
+    const link = el.appendChild(new Element("a"));
+    link.attrs.href = "/x";
+    link.computed = { color: article.link };
+    const p = el.appendChild(new Element("p"));
+    p.computed = { fontFamily: article.font };
+  }
   if (loaded) {
     const tag = head.appendChild(new Element("script"));
     tag.src = EMBED;
@@ -100,6 +109,7 @@ function run(config, { hostname = "blog.example.com", main = true, marker = fals
     KiteComments: config,
   };
   sandbox.window = sandbox;
+  if (style || article) sandbox.getComputedStyle = (el) => el.computed || { color: "", fontFamily: "" };
   sandbox.window.matchMedia = () => ({ matches: false, addEventListener() {} });
   vm.runInNewContext(source, sandbox);
   return { head, body, main: mainEl, slot, widgets: () => collect(html, (el) => el.tag === "kite-comments"), scripts: () => collect(html, (el) => el.tag === "script") };
@@ -199,4 +209,53 @@ test("a site with no provider still gets Giscus", () => {
   });
   assert.ok(page.scripts().some((el) => el.src === "https://giscus.app/client.js"));
   assert.equal(page.widgets().length, 0);
+});
+
+test("kite plus: takes the accent and font a theme names on its spot", () => {
+  const page = run(post, { marker: { "data-accent": "#b25334", "data-font": "serif" } });
+  const { attrs } = page.widgets()[0];
+  assert.equal(attrs.accent, "#b25334");
+  assert.equal(attrs.font, "serif");
+});
+
+test("kite plus: ignores a theme's accent or font it cannot use", () => {
+  const page = run(post, { marker: { "data-accent": "red", "data-font": "comic" } });
+  const { attrs } = page.widgets()[0];
+  assert.equal(attrs.accent, undefined);
+  assert.equal(attrs.font, undefined);
+});
+
+test("kite plus: follows the article's link color and serif text", () => {
+  const page = run(post, { article: { link: "rgb(178, 83, 52)", font: '"Noto Serif SC", serif' } });
+  const { attrs } = page.widgets()[0];
+  assert.equal(attrs.accent, "#b25334");
+  assert.equal(attrs.font, "serif");
+});
+
+test("kite plus: darkens a light link color in its hue for white text", () => {
+  const { attrs } = run(post, { article: { link: "rgb(219, 133, 102)", font: "Inter, sans-serif" } }).widgets()[0];
+  assert.match(attrs.accent, /^#[0-9a-f]{6}$/);
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(attrs.accent.substr(i, 2), 16));
+  assert.ok(r < 219 && g < 133 && b < 102, attrs.accent);
+  assert.ok(r > g && g > b, "keeps the hue: " + attrs.accent);
+  assert.equal(attrs.font, undefined);
+});
+
+test("kite plus: keeps its own look where the page gives no usable hint", () => {
+  const cases = [
+    ["rgb(0, 0, 238)", '"Noto Sans SC", sans-serif'],
+    ["rgba(178, 83, 52, 0)", "system-ui"],
+  ];
+  for (const [link, font] of cases) {
+    const { attrs } = run(post, { article: { link, font } }).widgets()[0];
+    assert.equal(attrs.accent, undefined, link);
+    assert.equal(attrs.font, undefined, font);
+  }
+});
+
+test("kite plus: a theme's own accent wins over the page's links", () => {
+  const page = run(post, { marker: { "data-accent": "#2f5d50" }, article: { link: "rgb(178, 83, 52)", font: "Georgia, serif" } });
+  const { attrs } = page.widgets()[0];
+  assert.equal(attrs.accent, "#2f5d50");
+  assert.equal(attrs.font, "serif");
 });

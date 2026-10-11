@@ -90,7 +90,12 @@ where the thread would be.
 
 Kite Plus Comments is a hosted comment service from Kite Plus. Readers sign in
 with a Kite Plus account, and there is no server of your own to run. It becomes
-usable once `comments.kite.plus` is live.
+live at `comments.kite.plus`.
+
+The thread takes on the page's look: its accent is the color of the article's
+links (darkened when needed so white text on it stays readable, as in dark
+mode), and it uses a serif face when the article does. A theme can name both
+instead; see below.
 
 1. Sign in to the comments console with a Kite Plus account, add your site's
    address, and verify it.
@@ -106,6 +111,15 @@ mark the spot:
 ```html
 <div data-kite-comments></div>
 ```
+
+With Kite Plus Comments, the same spot can name the thread's accent and font
+for the theme, in place of what the plugin reads from the page:
+
+```html
+<div data-kite-comments data-accent="#b25334" data-font="serif"></div>
+```
+
+`data-accent` is a `#RRGGBB` color, `data-font` is `serif` or `sans`.
 
 ## Releasing
 
